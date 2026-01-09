@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Players Online - Servers</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #000000, #8B0000);
+            color: white;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 50px;
+            font-size: 3em;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+        }
+
+        p {
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            margin: 40px auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+        }
+
+        .status {
+            font-size: 1.5em;
+            margin-top: 15px;
+        }
+
+        .online {
+            color: #4cff4c;
+            font-weight: bold;
+        }
+
+        .offline {
+            color: #ff4c4c;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 20px;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #000000, #8B0000);
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.6);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0px 10px 25px rgba(0,0,0,0.8);
+        }
+
+        .disclaimer {
+            font-weight: bold;
+            color: #ff4444;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Players Online</h1>
+
+    <p>
+        Live player counts for our Minecraft servers
+    </p>
+
+    <!-- MistyMc -->
+    <div class="card">
+        <h2>Server Status – MistyMc</h2>
+        <p><strong>IP:</strong> playmistymc.com</p>
+        <div id="misty-status" class="status">Loading...</div>
+        <div id="misty-players" class="status"></div>
+    </div>
+
+    <!-- ClashSMP -->
+    <div class="card">
+        <h2>Server Status – ClashSMP</h2>
+        <p><strong>IP:</strong> clashsmp.net</p>
+        <div id="clash-status" class="status">Loading...</div>
+        <div id="clash-players" class="status"></div>
+    </div>
+
+    <div class="disclaimer">
+        We are <strong>not affiliated with MistyMc or ClashSMP</strong>. This is a community-made page.
+    </div>
+
+    <div>
+        <a href="index.html" class="btn">Back Home</a>
+        <a href="https://discord.gg/gVYX2GMSvk" target="_blank" class="btn">Join Discord</a>
+    </div>
+
+    <script>
+        function loadServerStatus(serverIP, statusId, playersId) {
+            const apiURL = `https://api.mcstatus.io/v2/status/java/${serverIP}`;
+
+            fetch(apiURL)
+                .then(res => res.json())
+                .then(data => {
+                    const statusEl = document.getElementById(statusId);
+                    const playerEl = document.getElementById(playersId);
+
+                    if (data.online) {
+                        statusEl.innerHTML = "🟢 Server Online";
+                        statusEl.classList.add("online");
+
+                        playerEl.innerHTML =
+                            `👥 Players Online: <strong>${data.players.online}</strong> / ${data.players.max}`;
+                    } else {
+                        statusEl.innerHTML = "🔴 Server Offline";
+                        statusEl.classList.add("offline");
+                        playerEl.innerHTML = "";
+                    }
+                })
+                .catch(() => {
+                    document.getElementById(statusId).innerHTML =
+                        "⚠️ Unable to fetch server status";
+                });
+        }
+
+        loadServerStatus("playmistymc.com", "misty-status", "misty-players");
+        loadServerStatus("clashsmp.net", "clash-status", "clash-players");
+    </script>
+
+</body>
+</html>
